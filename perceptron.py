@@ -47,8 +47,8 @@ class Perceptron:
             # cycle through the entire data set
             for i in range(data_length):
                 point = points[i]
-                X = [point.x, point.y]
-                y = point.value
+                X = point.X
+                y = point.y
                 y_hat = self.output(X)
                 error = y - y_hat
 
@@ -64,23 +64,26 @@ class Perceptron:
         # putting y on the other side we get y = -(w0*x + bias) / w1
         y = lambda x: -(self.W[0] * x + self.bias) / self.W[1]
         return y
+    
+    def test_points(self, points):
+        for p in points:
+            print(f"{p.X} -> {p.y}; got {self.output(p.X)}")
 
     def __str__(self):
         return f"Weights: {' '.join(str(w) for w in self.W)}\nbias: {self.bias}\nactivation function: {self.activation.__name__}"
 
 # simple Point2d class, the extra value is used to classify the point
 class Point2d:
-    def __init__(self, x, y, value):
-        self.x = x
+    def __init__(self, X, y):
+        self.X = X
         self.y = y
-        self.value = value
 
 # Below are helper functions for plotting data
 
 def plot_points(points):
     # scatter plot of all the points (red = 0, blue = 1)
-    plt.scatter([p.x for p in points], [p.y for p in points],
-               c = ["blue" if p.value == 1 else "red" for p in points])
+    plt.scatter([p.X[0] for p in points], [p.X[1] for p in points],
+               c = ["blue" if p.y == 1 else "red" for p in points])
 
 def plot_perceptron_classifier(perceptron, x_range):
     # plot the line given by the perceptron's wheights and bias
@@ -89,36 +92,45 @@ def plot_perceptron_classifier(perceptron, x_range):
     y = eq(x)
     plt.plot(x, y)
 
-def classify_point(x, y, perceptron):
-    value = perceptron.output([x, y])
-    return Point2d(x, y, value)
+def classify_point(X, perceptron):
+    value = perceptron.output(X)
+    return Point2d(X, value)
 
 def generate_random_points(n, x_range, y_range, perceptron):
     new_points = []
     for i in range(n):
-        x = random.randint(x_range.start, x_range.stop)
-        y = random.randint(y_range.start, y_range.stop)
-        point = classify_point(x, y, perceptron)
+        X = [
+            random.randint(x_range.start, x_range.stop),
+            random.randint(y_range.start, y_range.stop)
+        ]
+        point = classify_point(X, perceptron)
         new_points.append(point)
     
     return new_points
 
 if __name__ == "__main__":
     points = [
-        Point2d(1, 2, 0),
-        Point2d(2, 1, 0),
-        Point2d(2, 2, 0),
-        Point2d(4, 5, 1),
-        Point2d(5, 4, 1),
-        Point2d(3, 6, 1),
-        Point2d(5, 2, 1),
-        Point2d(1, 6, 1),
-        Point2d(5, -10, 0),
+        Point2d([1, 2], 0),
+        Point2d([2, 1], 0),
+        Point2d([2, 2], 0),
+        Point2d([4, 5], 1),
+        Point2d([5, 4], 1),
+        Point2d([3, 6], 1),
+        Point2d([5, 2], 1),
+        Point2d([1, 6], 1),
+        Point2d([5, -10], 0),
     ]
 
     p1 = Perceptron([0, 0], 0, heaviside_nz)
+    p1.test_points(points)
+
     p1.learn(points)
 
+    p1.test_points(points)
+    print(p1)
+
+
+    """
     plot_points(points)
     plot_perceptron_classifier(p1, range(-10, 10))
 
@@ -130,6 +142,5 @@ if __name__ == "__main__":
 
     plt.show()
 
-    print()
-    print(p1)
+    """
 
