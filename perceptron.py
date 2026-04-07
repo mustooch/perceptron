@@ -94,12 +94,12 @@ def classify_point(X, perceptron):
     value = perceptron.output(X)
     return Point(X, value)
 
-def generate_random_points(n, x_range, y_range, perceptron):
+def generate_random_points(n, x1_range, x2_range, perceptron):
     new_points = []
     for i in range(n):
         X = [
-            random.randint(x_range.start, x_range.stop),
-            random.randint(y_range.start, y_range.stop)
+            random.randint(x1_range.start, x1_range.stop),
+            random.randint(x2_range.start, x2_range.stop)
         ]
         point = classify_point(X, perceptron)
         new_points.append(point)
@@ -123,7 +123,9 @@ if __name__ == "__main__":
 
     p1.learn(points)
 
+    print("-"*15)
     p1.test_points(points)
+    print("-"*15)
     print(p1)
 
 
