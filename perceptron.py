@@ -25,8 +25,8 @@ class Perceptron:
         self.n = len(self.W)    # length of the vector
         self.bias = bias
         self.activation = activation    # the activation function
-        self.learning_rate = 0.1 
-        self.epochs = 50    # number of times the whole training is done
+        self.learning_rate = 0.001 
+        self.epochs = 50000    # number of times the whole training is done
 
     def wheighted_sum(self, X):
         return sum(X[i] * self.W[i] for i in range(self.n)) + self.bias
@@ -118,7 +118,9 @@ if __name__ == "__main__":
         Point([1, 6], 1),
     ]
 
-    p1 = Perceptron([0, 0], 0, heaviside_nz)
+    p1 = Perceptron([random.uniform(-1, 1), random.uniform(-1, 1)], random.uniform(-1, 1), relu)
+    print(p1)
+    print("-"*15)
     p1.test_points(points)
 
     p1.learn(points)
