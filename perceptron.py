@@ -47,14 +47,12 @@ class Perceptron:
             # cycle through the entire data set
             for i in range(data_length):
                 point = points[i]
-                X = point.X
-                y = point.y
-                y_hat = self.output(X)
-                error = y - y_hat
+                y_hat = self.output(point.X)
+                error = point.y - y_hat
 
                 # update each weight and the bias
                 for j in range(self.n):
-                    self.W[j] = self.W[j] + self.learning_rate * error * X[j]
+                    self.W[j] = self.W[j] + self.learning_rate * error * point.X[j]
 
                 self.bias = self.bias + self.learning_rate * error
 
@@ -72,8 +70,8 @@ class Perceptron:
     def __str__(self):
         return f"Weights: {' '.join(str(w) for w in self.W)}\nbias: {self.bias}\nactivation function: {self.activation.__name__}"
 
-# simple Point2d class, the extra value is used to classify the point
-class Point2d:
+# simple Point class, the extra value is used to classify the point
+class Point:
     def __init__(self, X, y):
         self.X = X
         self.y = y
@@ -94,7 +92,7 @@ def plot_perceptron_classifier(perceptron, x_range):
 
 def classify_point(X, perceptron):
     value = perceptron.output(X)
-    return Point2d(X, value)
+    return Point(X, value)
 
 def generate_random_points(n, x_range, y_range, perceptron):
     new_points = []
@@ -110,15 +108,14 @@ def generate_random_points(n, x_range, y_range, perceptron):
 
 if __name__ == "__main__":
     points = [
-        Point2d([1, 2], 0),
-        Point2d([2, 1], 0),
-        Point2d([2, 2], 0),
-        Point2d([4, 5], 1),
-        Point2d([5, 4], 1),
-        Point2d([3, 6], 1),
-        Point2d([5, 2], 1),
-        Point2d([1, 6], 1),
-        Point2d([5, -10], 0),
+        Point([1, 2], 0),
+        Point([2, 1], 0),
+        Point([2, 2], 0),
+        Point([4, 5], 1),
+        Point([5, 4], 1),
+        Point([3, 6], 1),
+        Point([5, 2], 1),
+        Point([1, 6], 1),
     ]
 
     p1 = Perceptron([0, 0], 0, heaviside_nz)
